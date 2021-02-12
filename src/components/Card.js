@@ -26,7 +26,7 @@ function Card(props) {
                     <button className={cardLikeButtonClassName} onClick= {() => onCardLike(card)} type="button" aria-label="Like"></button>
                     <p className="elements__likes">{card.likes.length}</p>
                 </div>
-                <button className={cardDeleteButtonClassName} type="button" onClick ={() => props.onCardDelete(card)} aria-label="Delete"></button>
+                <button className={cardDeleteButtonClassName} type="button" onClick ={() => onCardDelete(card)} aria-label="Delete"></button>
         </figure>
     );
 }
