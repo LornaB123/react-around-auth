@@ -10,7 +10,8 @@ function EditAvatarPopup(props) {
         // Prevent the browser from navigating to the form address
         e.preventDefault();
         // Pass the values of the managed components to the external handler
-        onUpdateAvatar(avatarRef.current.value)/* The value of the input which we got using the ref */
+        onUpdateAvatar(avatarRef.current.value);/* The value of the input which we got using the ref */
+        avatarRef.current.value = '';
         }  
 
 
