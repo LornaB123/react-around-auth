@@ -2,7 +2,7 @@ import React from 'react';
 //import CurrentUserContext from '../contexts/CurrentUserContext.js';
 
 function PopupWithForm (props) {
-
+    
 
     return (
 

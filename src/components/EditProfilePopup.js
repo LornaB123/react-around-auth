@@ -6,6 +6,7 @@ function EditProfilePopup(props) {
 
     const [name, setName] = useState(' ');
     const [description, setDescription] = useState(' ');
+    const [errorName, setErrorName] = useState(' ');
     // Subscription to the context
     const currentUser = useContext(CurrentUserContext);
 
@@ -13,9 +14,14 @@ function EditProfilePopup(props) {
         setName(e.target.value);
     }
 
+    function handleNameError(e) {
+        setErrorName(e.target.validationMessage);
+    }
+
     function handleChangeAbout(e){
         setDescription(e.target.value);
     }
+
 
     function handleSubmit(e) {
         // Prevent the browser from navigating to the form address
@@ -51,8 +57,10 @@ function EditProfilePopup(props) {
             value = {name || ''}
             className="popup__input popup__input_type_name" 
             onChange={handleChangeName} 
+            error = {handleNameError}
             placeholder='Jacques Cousteau' 
-            required maxLength="40" minLength="2"/>
+            required maxLength="40" minLength="2"
+            />
             <span id="profile-name-error" className = "popup__error"></span>
 
             <input id = "profile-text" type='text' 

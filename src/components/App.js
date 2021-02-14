@@ -3,13 +3,13 @@ import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
 import PopupWithImage from './PopupWithImage.js';
-import PopupWithForm from './PopupWithForm.js';
 import EditProfilePopup from './EditProfilePopup.js';
 import EditAvatarPopup from './EditAvatarPopup.js';
+import DeleteCardPopup from './DeleteCardPopup.js';
 import AddPlacePopup from './AddPlacePopup.js';
+import FormValidator from './FormValidator.js';
 import api from '../utils/api.js';
 import CurrentUserContext from '../contexts/CurrentUserContext.js';
-import DeleteCardPopup from './DeleteCardPopup.js';
 
 
 function App() {
@@ -42,8 +42,8 @@ function App() {
         setCards(newCards);
     })
     .catch((err) => console.log(err));
- }
- 
+ } 
+
  function handleCardDeleteSubmit(card = selectedCard){
      api.removeCard(card._id)
      .then(() => {
@@ -140,7 +140,9 @@ function App() {
     return (
     
     <div className="body">
+
     <CurrentUserContext.Provider value={currentUser}>
+    
     <Header />
     
     <Main 
@@ -172,7 +174,6 @@ function App() {
         onAddPlace = {handleAddPlace}
     />
 
-
     <DeleteCardPopup 
         isOpen={deletePopupOpen} 
         onClose={handleClosePopups} 
@@ -182,7 +183,9 @@ function App() {
     card={selectedCard} 
     isOpen={imagePopupOpen} 
     onClose={closeAllPopups} />
+    
     </CurrentUserContext.Provider> 
+    
     </div>
   );
   }
