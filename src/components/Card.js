@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import CurrentUserContext from '../contexts/CurrentUserContext.js';
 
 function Card(props) {
-   const {card, onCardDelete, onCardClick, onCardLike, onUpdateCardLike, onUpdateCardDelete} = props;
+   const {card, onCardDelete, onCardClick, onCardLike} = props;
    const currentUser = useContext(CurrentUserContext);
 
    // Checking if you are the owner of the current card
@@ -32,15 +32,3 @@ function Card(props) {
 }
 
 export default Card;
-
-// {cards.map((card) => 
-//     <Card
-//     key={card._id}
-//     src={card.link}
-//     title={card.name}
-//     likes={card.likes.length}
-//     owner={card.owner}
-//     onCardDelete = {(card) => props.handleCardDelete(card.link, card.name)}
-//     onCardClick = {(card) => props.handleCardClick(card)}
-//     />
-//     )}

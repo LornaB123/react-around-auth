@@ -18,15 +18,11 @@ function App() {
     const [addCardOpen, setAddCardOpen] = useState(false);
     const [deletePopupOpen, setDeletePopupOpen] = useState(false);
     const [imagePopupOpen, setImagePopupOpen] = useState(false);
-    //set image popup states
     const [selectedCard, setSelectedCard] = useState('');
-    //state variable for current user - calls api.getUserInfo()
     const [currentUser, setCurrentUser] = useState('');
-    //set card states
     const [cards, setCards] = useState([]); 
 
     function handleCardLike(card) {
-    //check one more time if this card was already liked
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
     let likeStatus
     if(isLiked === false){
@@ -96,8 +92,8 @@ function App() {
            setCards([newCard, ...cards]);
         })
         .catch((err) => console.log(err))
-        .finally(()=> closeAllPopups());
-        }
+        .finally(() => closeAllPopups());
+    }
     
 
     //handler functions for popups

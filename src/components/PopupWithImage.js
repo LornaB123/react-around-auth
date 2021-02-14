@@ -1,7 +1,9 @@
 import React from 'react';
 
 function PopupWithImage(props){
-    const {card, isOpen, onClose} = props;
+    const {card,
+           isOpen,
+           onClose} = props;
 
     return (
         <div className= {`popup popup_type_image ${isOpen ? "popup_open" : ""}`} onClick = {onClose}>
