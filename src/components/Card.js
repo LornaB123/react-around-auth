@@ -20,7 +20,7 @@ function Card(props) {
 
     return(
         <figure className="elements__element">
-                <img className="elements__element-pic" alt="card image" onClick ={() => onCardClick(card)} src={card && card.link}/>
+                <img className="elements__element-pic" alt="card" onClick ={() => onCardClick(card)} src={card && card.link}/>
                 <figcaption className="elements__caption">{card.name}</figcaption>
                 <div className = "elements__favorite-container">
                     <button className={cardLikeButtonClassName} onClick= {() => onCardLike(card)} type="button" aria-label="Like"></button>

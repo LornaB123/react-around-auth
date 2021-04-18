@@ -1,0 +1,11 @@
+.login__text {
+  width: 358px;
+  height: 17px;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  color: #ffffff;
+  margin: 15px auto 80px;
+  text-decoration: none;
+}
