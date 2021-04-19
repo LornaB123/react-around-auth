@@ -1,26 +1,42 @@
 @import url("./__email/header__email.css");
+@import url("./__icon/header__icon.css");
 @import url("./__link/header__link.css");
+@import url("./__log/header__log.css");
+@import url("./__wrapper/header__wrapper.css");
 
 .header {
-    display: flex;
-    flex-direction: column;
-    padding-top: 45px;
-    margin: 0 auto;
+    position: relative;
     max-width: 882px;
-    max-height: 74px;
-    border-bottom: 1px solid rgba(84,84,84,.7);
-
+    margin: 0px auto 40px;
+    border: none;
+    border-bottom: 1px solid rgba(84, 84, 84, .7);
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 40px;
+    padding-top: 45px ;
 }
 
-@media screen and (max-width: 1120px) {
+@media screen and (max-width: 770px) {
     .header {
-        max-width: 750px;
+        margin: 28px auto 42px;
+        padding-left: 27px;
+        padding-right: 27px;
     }
 }
 
-@media screen and (max-width: 725px) {
+@media only screen and (max-width: 600px) {
     .header {
-        max-width: 320px;
-        padding-top: 28px;
-        }
+        flex-wrap: wrap;
+        transition: all 1s;
+        padding-bottom: 25px;
+    }
+    .header_open {
+        max-height: 227px;
+        align-items: flex-end;
+        padding-bottom: 33px;
+        margin-top: 0;
+        padding-top: 163px;
+    }
 }

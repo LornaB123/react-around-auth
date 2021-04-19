@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Route,
-  Switch,
-  Redirect,
-  useHistory,
-} from "react-router-dom";
+import {Route, Redirect, useHistory} from 'react-router-dom'
 import CurrentUserContext from "../contexts/CurrentUserContext.js";
 
 import Header from "./Header.js";
@@ -18,9 +13,10 @@ import AddPlacePopup from "./AddPlacePopup.js";
 import Login from "./Login.js";
 import Register from "./Register.js";
 import InfoToolTip from "./InfoToolTip.js";
+import logo from "../images/logo.svg";
 
 import api from "../utils/api.js";
-import auth from '../utils/auth.js';
+import {checkToken, authorize, register} from '../utils/auth';
 import ProtectedRoute from "./ProtectedRoute.js";
 
 function App() {
@@ -33,12 +29,10 @@ function App() {
   const [currentUser, setCurrentUser] = useState("");
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [userEmail, setUserEmail] = useState("");
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
   const [registered, setRegistered] = useState(false);
-  const [tooltipMode, setTooltipMode] = useState(false);
-  const [isInfoToolTipOpen, setIsInfoToolTipOpen] = useState(false);
+  const [isOpenToolTip, setIsOpenToolTip] = useState(false);
+
   const history = useHistory();
 
   function handleCardLike(card) {
@@ -88,20 +82,20 @@ function App() {
   }, []);
 
   useEffect(() => {
-      const jwt = localStorage.getItem('jwt');
-      if(jwt) {
-          auth
-          .getContent(jwt)
-          .then((res) => {
-              setLoggedIn(true);
-              setUserEmail(res.data.email);
-          })
-          .catch((err) => {
-              console.log(err);
-          }); 
-      } else {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      return checkToken(jwt)
+        .then(({ data }) => {
+          if (data) {
+            setLoggedIn(true);
+            setEmail(data.email);
+            return;
+          }
           setLoggedIn(false);
-      }
+        })
+        .catch((err) => console.log(err));
+    }
+    setLoggedIn(false);
   }, []);
 
   function handleUpdateUser({ name, about }) {
@@ -153,7 +147,6 @@ function App() {
     setAddCardOpen(false);
     setDeletePopupOpen(false);
     setImagePopupOpen(false);
-    setIsInfoToolTipOpen(false);
   }
 
   function handleClosePopups(e) {
@@ -166,172 +159,112 @@ function App() {
     setImagePopupOpen(true);
   }
 
-  function handleLogin() {
-    setLoggedIn(true);
+  function toggleToolTip() {
+    setIsOpenToolTip(!isOpenToolTip);
   }
-
-  function resetForm() {
-    setEmail('');
-    setPassword('');
-  }
-
-  function handleLoginSubmit(e) {
-    e.preventDefault();
-    const [email, password] = [e.target.email.value, e.target.password.value];
-    auth
-      .authorize(email, password)
-      .then((data) => {
-        if (data && data.token) {
-          handleLogin();
-        } else {
-          resetForm();
-          if (!email || !password) {
-            throw new Error('400 - one or more of the fields were not provided');
-          }
-          if (!data) {
-            throw new Error('401 - bad email or password');
-          }
-        }
-      })
-      .then(() => {
-        resetForm();
-      })
-      .then(() => {
-        history.push('/main');
-      })
-      .catch((err) => console.log(err.message));
-  };
-
-  function handleRegisterSubmit(e){
-    e.preventDefault();
-    auth.register(email, password)
+  function handleRegister(password, email) {
+    return register(password, email)
       .then((res) => {
-        if (!res.data) {
-          handleToolTip('failure');
-          throw new Error(`400 - ${res.message ? res.message : res.error}`);
-        }})
-        .then((res) => {
+        if (res.data) {
+          setLoggedIn(true);
+          history.push("/signin");
+          handleAuth(password, email);
           setRegistered(true);
-          history.push('/signin');
-          return res;
-        })
-        .then((res) => {
-          handleToolTip('success');
-          return res;
-        })
-      .then(resetForm)
-      .catch(err => {
-        console.log(err)
-      });
+          toggleToolTip();
+          return;
+        }
+        setRegistered(false);
+        toggleToolTip();
+      })
+      .catch((err) => console.log(err));
   }
-
-  function handleLogout() {
-    localStorage.removeItem("jwt");
-    setLoggedIn(false);
-    history.push('/signin');
+  function handleAuth(password, email) {
+    authorize(password, email)
+      .then(({ token }) => {
+        if (token) {
+          localStorage.setItem("jwt", token);
+          setLoggedIn(true);
+          setEmail(email);
+          return;
+        }
+        setRegistered(false);
+        toggleToolTip();
+      })
+      .catch((err) => console.log(err));
   }
-
-  function handleToolTip(mode) {
-    setTooltipMode(mode);
-    setIsInfoToolTipOpen(true);
+  function handleLogin() {
+    setLoggedIn(!loggedIn);
   }
-
-
 
   return (
     <div className="body">
       <CurrentUserContext.Provider value={currentUser}>
-        <Header
-            loggedIn={loggedIn}
-            logout={handleLogout}
-            email={userEmail}
-        />
-        <Switch>
-          <Route path="/signin">
-            <Login
-              loggedIn={loggedIn}
-              email={email}
-              setEmail={setEmail}
-              password={password}
-              setPassword={setPassword}
-              userEmail={setUserEmail}
-              setUserEmail={setUserEmail}
-              handleLogin={handleLogin}
-              handleLoginSubmit={handleLoginSubmit}
-              handleToolTip={handleToolTip}
-            />
-            <InfoToolTip
-              isOpen={isInfoToolTipOpen}
-              onClose={closeAllPopups}
-              loggedIn={loggedIn}
-              mode={tooltipMode}
-            />
-          </Route>
-          <Route exact path="/signup">
-          <Register
-              registered={registered}
-              email={email}
-              setEmail={setEmail}
-              password={password}
-              setPassword={setPassword}
-              handleRegisterSubmit={handleRegisterSubmit}
-              setUserEmail={setUserEmail}
-              handleLogin={handleLogin}
-              handleToolTip={handleToolTip}
-            />
-            <InfoToolTip
-              isOpen={isInfoToolTipOpen}
-              onClose={closeAllPopups}
-              loggedIn={loggedIn}
-              mode={tooltipMode}
-            />
-          </Route>
-          <ProtectedRoute 
-            path="/main" 
-            loggedIn={loggedIn}>
-            <Main
-              cards={cards}
-              onEditAvatar={handleEditAvatarClick}
-              onEditProfile={handleEditProfileClick}
-              onAddPlace={handleAddCardClick}
-              onCardDelete={handleCardDelete}
-              onCardClick={handleCardClick}
-              onCardLike={handleCardLike}
-              onCloseButtons={closeAllPopups}
-            />
-            <Footer />
-            <EditAvatarPopup
-              isOpen={editAvatarOpen}
-              onClose={handleClosePopups}
-              onUpdateAvatar={handleUpdateAvatar}
-            />
-            <EditProfilePopup
-              isOpen={editProfileOpen}
-              onClose={handleClosePopups}
-              onUpdateUser={handleUpdateUser}
-            />
-            <AddPlacePopup
-              isOpen={addCardOpen}
-              onClose={handleClosePopups}
-              onAddPlace={handleAddPlace}
-            />
-            <PopupWithForm
-              name="type_delete-card"
-              title="Are you sure?"
-              buttonText="Yes"
-              isOpen={deletePopupOpen}
-              onClose={handleClosePopups}
-            />
-            <PopupWithImage
-              card={selectedCard}
-              isOpen={imagePopupOpen}
-              onClose={handleClosePopups}
-            />
-          </ProtectedRoute>
-          <Route path="/">
-            {loggedIn ? <Redirect to="/main" /> : <Redirect to="/signin" />}
-          </Route>
-        </Switch>
+        <Route path="/signin">
+          {loggedIn ? (
+            <Redirect to="/" />
+          ) : (
+            <Login logo={logo} handleAuth={handleAuth} />
+          )}
+        </Route>
+        <Route path="/signup">
+          {loggedIn ? (
+            <Redirect to="/" />
+          ) : (
+            <Register logo={logo} handleRegister={handleRegister} />
+          )}
+        </Route>
+        <ProtectedRoute path="/" loggedIn={loggedIn}>
+          <Header 
+            logo={logo} 
+            email={email} 
+            handleLog={handleLogin} />
+          <Main
+            cards={cards}
+            onEditAvatar={handleEditAvatarClick}
+            onEditProfile={handleEditProfileClick}
+            onAddPlace={handleAddCardClick}
+            onCardDelete={handleCardDelete}
+            onCardClick={handleCardClick}
+            onCardLike={handleCardLike}
+            onCloseButtons={closeAllPopups}
+          />
+          <Footer />
+          <EditAvatarPopup
+            isOpen={editAvatarOpen}
+            onClose={handleClosePopups}
+            onUpdateAvatar={handleUpdateAvatar}
+          />
+          <EditProfilePopup
+            isOpen={editProfileOpen}
+            onClose={handleClosePopups}
+            onUpdateUser={handleUpdateUser}
+          />
+          <AddPlacePopup
+            isOpen={addCardOpen}
+            onClose={handleClosePopups}
+            onAddPlace={handleAddPlace}
+          />
+          <PopupWithForm
+            name="type_delete-card"
+            title="Are you sure?"
+            buttonText="Yes"
+            isOpen={deletePopupOpen}
+            onClose={handleClosePopups}
+          />
+          <PopupWithImage
+            card={selectedCard}
+            isOpen={imagePopupOpen}
+            onClose={handleClosePopups}
+          />
+        </ProtectedRoute>
+        <Route path='/'>
+                { loggedIn ? <Redirect to='/' /> : <Redirect to='/signin' /> }
+            </Route> 
+            <InfoToolTip 
+                isOpen={isOpenToolTip} 
+                registered={registered} 
+                toggle={toggleToolTip}
+                />
       </CurrentUserContext.Provider>
     </div>
   );

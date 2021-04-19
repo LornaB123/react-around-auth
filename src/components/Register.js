@@ -1,72 +1,66 @@
-import React, { useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import PopupWithForm from './PopupWithForm';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function Register(props) {
-  const { registered, handleRegisterSubmit, email, setEmail, password, setPassword, onClose } = props; 
-  const history = useHistory();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState({});
 
-  useEffect(() => {
-    if (localStorage.getItem('token')) { 
-      history.push('/around');
+    function handleEmail(e) {
+        setEmail(e.target.value)
+        setError({...error, [e.target.name]: e.target.validationMessage})
     }
-  }, [history]);
-
-  useEffect(() => {
-    if (registered) {
-      debugger; 
-      history.push('/signin');
+    function handlePassword(e) {
+        setPassword(e.target.value)
+        setError({...error, [e.target.name]: e.target.validationMessage})
     }
-  }, [history, registered]);
+    function reset() {
+        setEmail('');
+        setPassword('')
+    }
+    function handleSubmit(e) {
+        e.preventDefault();
+        if(!Object.values(error).filter(e => e).length) {
+            props.handleRegister(password,email);
+            reset()
+        }
+    }
 
-  return (
-      <>
-        <Link className='login__call-out' to='/signin'>
-          Log in
-        </Link>
-        <PopupWithForm
-          name='signup'
-          title='Sign up'
-          isOpen={true}
-          onClose={onClose}
-          onSubmit={handleRegisterSubmit}
-        >
-          <input
-            className='login__input'
-            type='email'
-            id='email'
-            name='email'
-            placeholder='Email'
-            required
-            value={email || ''}
-            onChange={e => setEmail(e.target.value)}
-            autoComplete="on"
-          />
-          <input
-            className='login__input'
-            type='password'
-            id='password'
-            name='password'
-            placeholder='Password'
-            minLength='2'
-            maxLength='200'
-            required
-            value={password || ''}
-            onChange={e => setPassword(e.target.value)}
-            autoComplete="on"
-          />
-          <button
-            className='login__submit'
-            to='/main'
-          >
-            Sign up
-          </button>
-          <Link className='login__text' to='/signin'>
-            Already a member? Log in here!
-          </Link>
-        </PopupWithForm>
-      </>
-    );
-  }
+    return (
+        <div className='login'>
+            <div className='login__container'>
+                <img src={props.logo} alt="logo" className="logo" />
+                <Link to='/signin' className='login__link'>Log in</Link>
+            </div>
+            <form 
+                action="#" 
+                className='login__form'
+                onSubmit={handleSubmit}
+                >
+                <p className="login__title">Sign up</p>
+                <input 
+                    type="email" 
+                    name="email" 
+                    placeholder='Email' 
+                    className='login__input' 
+                    value={email}
+                    onChange={handleEmail}
+                    required/>
+                <input 
+                    type="password" 
+                    name="password" 
+                    placeholder='Password' 
+                    className='login__input' 
+                    value={password}
+                    onChange={handlePassword}
+                    minLength={4}
+                    maxLength={12}
+                    required/>
+                <button className="login__submit" type='submit'>Sign up</button>
+                <Link to='/signin' className="login__link login__note">Already a member? Log in here!</Link>
+            </form>
+        </div>
+    )
+}
 
 export default Register;

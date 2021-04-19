@@ -1,25 +1,30 @@
-import React from 'react';
-import logoPic from '../images/logo.svg';
-import { Link } from 'react-router-dom';
+import { useState } from 'react'
 
 function Header(props) {
-    const {loggedIn, logout, userEmail} = props;
+    const [isOpen,setIsOpen] = useState(false)
+
+    function handleClick() {
+        setIsOpen(!isOpen)
+    }
+    function logout() {
+        localStorage.removeItem('jwt');
+        props.handleLog()
+    }
+
     return (
-      <header className="header">
-        <img src={logoPic} alt="Around the US" className="logo" />
-        <>
-      {loggedIn && (
-        <ul className='header__links'>
-          <li className='header__email'>{userEmail}</li>
-          <li>
-            <Link className='header__link' onClick={logout} to='/signin'>
-              Log out
-            </Link>
-          </li>
-        </ul>)}
-    </>
-      </header>
-    );
+        <header className={`header ${isOpen && 'header_open'}`}>
+            <img src={props.logo} alt="logo" className="logo" />
+            <div className={`header__wrapper ${isOpen && 'header__wrapper_open'}`}>
+                <p className='header__email'>{ props.email }</p>
+                <button
+                    className='header__log'
+                    onClick={logout}>Log out</button>
+            </div>
+            <button 
+                className={`header__icon ${isOpen && 'header__icon_cross'}`}
+                onClick={handleClick} />
+        </header>
+    )
 }
 
 export default Header;

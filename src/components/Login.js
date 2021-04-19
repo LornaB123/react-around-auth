@@ -1,74 +1,59 @@
-import React, { useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 function Login(props) {
-  const {
-    loggedIn,
-    email,
-    setEmail,
-    password,
-    setPassword,
-    handleLoginSubmit,
-    userEmail,
-    setUserEmail,
-    onClose,
-  } = props;
-  const history = useHistory();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-  useEffect(() => {
-    if (loggedIn) {
-      history.push("/main");
-      setUserEmail(email || userEmail);
-    }
-  });
-
-  return (
-    <div className="login">
+  function handleEmail(e) {
+    setEmail(e.target.value)
+}
+function handlePassword(e) {
+    setPassword(e.target.value)
+}
+function reset() {
+    setEmail('');
+    setPassword('')
+}
+function handleSubmit(e) {
+    e.preventDefault();
+    props.handleAuth(password,email);
+    reset()
+}
+return (
+    <div className='login'>
+        <div className='login__container'>
+            <img src={props.logo} alt="logo" className="logo" />
+            <Link to='/signup' className='login__link'>Sign up</Link>
+        </div>
         <form 
             action="#" 
-            onSubmit={handleLoginSubmit}
-            className="login__form"
-            onClose={onClose}
-        />
-        <h2 className="login__title">Log in</h2>
-        <input
-          id="email"
-          type="email"
-          name="email"
-          placeholder="Email"
-          className="login__input"
-          minLength="2"
-          maxLength="40"
-          required
-          value={email || ""}
-          onChange={(e) => setEmail(e.target.value)}
-          autoComplete="on"
-        />
-        <input
-          className="login__input"
-          type="password"
-          id="password"
-          name="password"
-          placeholder="Password"
-          minLength="2"
-          maxLength="200"
-          required
-          value={password || ""}
-          onChange={(e) => setPassword(e.target.value)}
-          autoComplete="on"
-        />
-        <button className="login__submit" to="/main">
-          Log in
-        </button>
-        <Link className="login__text" to="/signup">
-          Not a member yet? Sign up here!
-        </Link>
-        
-    <Link className="login__call-out" to="/signup">
-        Sign up
-    </Link>
+            className='login__form'
+            onSubmit={handleSubmit}>
+            <p className="login__title">Log in</p>
+            <input 
+                type="email" 
+                name="email" 
+                placeholder='Email' 
+                className='login__input' 
+                value={email}
+                onChange={handleEmail}
+                required/>
+            <input 
+                type="password" 
+                name="password" 
+                placeholder='Password' 
+                className='login__input' 
+                value={password}
+                onChange={handlePassword}
+                minLength={4}
+                maxLength={12}
+                required/>
+            <button className="login__submit" type='submit'>Log in</button>
+            <Link to='/signup' className="login__link login__note">Not a member yet? Sign up here!</Link>
+        </form>
     </div>
-  );
+)
 }
 
 export default Login;
