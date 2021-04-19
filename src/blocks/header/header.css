@@ -7,7 +7,7 @@
 .header {
     position: relative;
     max-width: 882px;
-    margin: 0px auto 40px;
+    margin: auto;
     border: none;
     border-bottom: 1px solid rgba(84, 84, 84, .7);
     box-sizing: border-box;
