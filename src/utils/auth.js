@@ -11,7 +11,6 @@ export const register = (password, email) => {
     })
     .then(res => res.json())
     .then(res => res)
-    .catch(err => console.log(err))
 };
 export const authorize = (password, email) => {
     return fetch(`${BASE_URL}/signin`, {
@@ -25,7 +24,6 @@ export const authorize = (password, email) => {
     })
     .then(res => res.json())
     .then(res => res)
-    .catch(err => console.log(err))
 };
 export const checkToken = (token) => {
     return fetch(`${BASE_URL}/users/me`, {
@@ -38,5 +36,4 @@ export const checkToken = (token) => {
     })
     .then(res => res.json())
     .then(data => data)
-    .catch(err => console.log(err))
 }

@@ -11,7 +11,6 @@ class Api {
             headers:  this._headers 
         }) 
         .then(res => res.ok ? res.json() : Promise.reject('Error' + res.statusText)) 
-        .catch(err => console.log(err)) 
     } 
  
     //GET specified URL -user-info 
@@ -20,7 +19,6 @@ class Api {
             headers: this._headers 
         }) 
         .then(res => res.ok ? res.json() : Promise.reject('Error' + res.statusText)) 
-        .catch(err => console.log(err)) 
     } 
  
       getAppInfo(){ 
@@ -49,8 +47,6 @@ class Api {
              method: "DELETE", 
              }) 
          .then(res => res.ok ? res.json() : Promise.reject('Error' + res.statusText)) 
-         //.then(res => res.remove(cardID)) 
-         .catch(err => console.log(err)) 
      } 
  
     //PUT specified url cardID 
@@ -61,8 +57,6 @@ class Api {
             method: "PUT", 
             }) 
         .then(res => res.ok ? res.json() : Promise.reject('Error' + res.statusText)) 
-        //.then(res => res.remove(cardID)) 
-        .catch(err => console.log(err)) 
     } 
  
     removeLike(cardID){ 
@@ -70,9 +64,7 @@ class Api {
             headers:  this._headers, 
             method: "DELETE", 
             }) 
-        .then(res => res.ok ? res.json() : Promise.reject('Error' + res.statusText)) 
-        //.then(res => res.remove(cardID)) 
-        .catch(err => console.log(err)) 
+        .then(res => res.ok ? res.json() : Promise.reject('Error' + res.statusText))
     } 
  
     //PATCH user-info 
@@ -88,8 +80,7 @@ class Api {
                 about 
         }) 
     }) 
-        .then(res => res.ok ? res.json() : Promise.reject('Error' + res.statusText)) 
-        .catch(err => console.log(err)) 
+        .then(res => res.ok ? res.json() : Promise.reject('Error' + res.statusText))  
 } 
  
     //PATCH avatar 
@@ -102,7 +93,6 @@ class Api {
             }) 
         }) 
         .then(res => res.ok ? res.json() : Promise.reject('Error' + res.statusText)) 
-        .catch(err => console.log(err)) 
     } 
 } 
 //connect api 
